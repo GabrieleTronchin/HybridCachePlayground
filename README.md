@@ -11,9 +11,13 @@ In .NET, there are currently two primary ways to implement caching:
 
 With the upcoming release of .NET 9, a new caching mechanism called **HybridCache** is set to be introduced.
 
-**HybridCache** combines the benefits of both memory and distributed caches, allowing it to provide the speed of an in-memory cache while also offering the durability and scalability of a distributed or persistent cache. This makes it particularly useful for applications that need both performance and reliability in their caching strategy.
+**HybridCache** combines the benefits of both memory and distributed caches, allowing it to provide the speed of an in-memory cache while also offering the durability and scalability of a distributed or persistent cache. 
 
-One of the key features of HybridCache is that it is designed to be a drop-in replacement for existing implementations of `IDistributedCache` and `IMemoryCache`. If an application already has an `IDistributedCache` implementation, the HybridCache service can leverage it for secondary caching, ensuring that cached data is always available even if one cache layer fails.
+This makes it particularly useful for applications that need both performance and reliability in their caching strategy.
+
+One of the key features of HybridCache is that it is designed to be a drop-in replacement for existing implementations of `IDistributedCache` and `IMemoryCache`.
+
+If an application already has an `IDistributedCache` implementation, the HybridCache service can leverage it for secondary caching, ensuring that cached data is always available even if one cache layer fails.
 
 ### Solving Cache Stampede with HybridCache
 
