@@ -1,5 +1,5 @@
 using Microsoft.Extensions.Caching.Hybrid;
-using Microsoft.Extensions.Configuration;
+using System.Reflection;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddEndpointsApiExplorer();
@@ -36,12 +36,32 @@ app.MapGet(
         {
             return await cache.GetOrCreateAsync(
                 key,
-                async (token) => await Task.Run(() => $"{nameof(cache.GetOrCreateAsync)} - Hello World")
+                async (token) => await Task.Run(() => $"{nameof(cache.GetOrCreateAsync)} - Hello World"),
+                token: token
             );
         }
     )
     .WithName("GetOrCreateAsync")
     .WithOpenApi();
+
+
+app.MapGet(
+        "/Tags/GetOrCreateAsync/{key}",
+        async (string key, HybridCache cache, CancellationToken token = default) =>
+        {
+            var tags = new List<string> { $"{nameof(Assembly.FullName)}" };
+
+            return await cache.GetOrCreateAsync(
+                key,
+                async (token) => await Task.Run(() => $"{nameof(cache.GetOrCreateAsync)} - Hello World"),
+                tags:tags,
+                token: token
+            );
+        }
+    )
+    .WithName("GetOrCreateAsync")
+    .WithOpenApi();
+
 
 app.MapPost(
         "/SetAsync/{key}",
@@ -54,7 +74,18 @@ app.MapPost(
     .WithOpenApi();
 
 app.MapDelete(
-        "/RemoveAsync",
+        "/RemoveByTagAsync",
+        (HybridCache cache) =>
+        {
+            cache.RemoveAsync($"{nameof(Assembly.FullName)}");
+        }
+    )
+    .WithName("RemoveAsync")
+    .WithOpenApi();
+
+
+app.MapDelete(
+        "/RemoveAsync/{key}",
         (string key, HybridCache cache) =>
         {
             cache.RemoveAsync(key);
