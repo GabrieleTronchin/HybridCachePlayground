@@ -36,7 +36,7 @@ app.MapGet(
         {
             return await cache.GetOrCreateAsync(
                 key,
-                async (token) => await Task.Run(() => $"{nameof(cache.GetOrCreateAsync)} - Hello World"),
+                async (token) => await Task.Run(() => $"{nameof(cache.GetOrCreateAsync)} - Hello World - {DateTime.Now}"),
                 token: token
             );
         }
@@ -46,28 +46,28 @@ app.MapGet(
 
 
 app.MapGet(
-        "/Tags/GetOrCreateAsync/{key}",
+        "/GetOrCreateWithTagsAsync/{key}",
         async (string key, HybridCache cache, CancellationToken token = default) =>
         {
             var tags = new List<string> { $"{nameof(Assembly.FullName)}" };
 
             return await cache.GetOrCreateAsync(
                 key,
-                async (token) => await Task.Run(() => $"{nameof(cache.GetOrCreateAsync)} - Hello World"),
+                async (token) => await Task.Run(() => $"{nameof(cache.GetOrCreateAsync)} - Hello World - {DateTime.Now}"),
                 tags:tags,
                 token: token
             );
         }
     )
-    .WithName("GetOrCreateAsync")
+    .WithName("GetOrCreateWithTagsAsync")
     .WithOpenApi();
 
 
 app.MapPost(
         "/SetAsync/{key}",
-        async (string key, HybridCache cache) =>
+        async (string key, HybridCache cache, CancellationToken token = default) =>
         {
-            await cache.SetAsync(key, $"{nameof(cache.SetAsync)} - Hello World");
+            await cache.SetAsync(key, $"{nameof(cache.SetAsync)} - Hello World - {DateTime.Now}", token: token);
         }
     )
     .WithName("CreateAndSet")
@@ -75,20 +75,20 @@ app.MapPost(
 
 app.MapDelete(
         "/RemoveByTagAsync",
-        (HybridCache cache) =>
+        (HybridCache cache, CancellationToken token = default) =>
         {
-            cache.RemoveAsync($"{nameof(Assembly.FullName)}");
+            cache.RemoveByTagAsync($"{nameof(Assembly.FullName)}", token: token);
         }
     )
-    .WithName("RemoveAsync")
+    .WithName("RemoveByTagAsync")
     .WithOpenApi();
 
 
 app.MapDelete(
         "/RemoveAsync/{key}",
-        (string key, HybridCache cache) =>
+        (string key, HybridCache cache, CancellationToken token = default) =>
         {
-            cache.RemoveAsync(key);
+            cache.RemoveAsync(key, token: token);
         }
     )
     .WithName("RemoveAsync")
