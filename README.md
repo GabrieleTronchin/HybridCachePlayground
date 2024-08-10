@@ -1,7 +1,3 @@
-Here's a revised and enriched version of your text:
-
----
-
 # HybridCache Playground
 
 In .NET, there are currently two primary ways to implement caching:
