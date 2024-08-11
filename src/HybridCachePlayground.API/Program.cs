@@ -16,10 +16,7 @@ builder.Services.AddHybridCache(options =>
     };
 });
 
-builder.Services.AddStackExchangeRedisCache(options =>
-{
-    builder.Configuration.Bind("RedisCache", options);
-});
+builder.Services.AddStackExchangeRedisCache(options => builder.Configuration.Bind("RedisCache", options));
 
 
 var app = builder.Build();
@@ -33,13 +30,11 @@ if (app.Environment.IsDevelopment())
 app.MapGet(
         "/GetOrCreateAsync/{key}",
         async (string key, HybridCache cache, CancellationToken token = default) =>
-        {
-            return await cache.GetOrCreateAsync(
+        await cache.GetOrCreateAsync(
                 key,
                 async (token) => await Task.Run(() => $"{nameof(cache.GetOrCreateAsync)} - Hello World - {DateTime.Now}"),
                 token: token
-            );
-        }
+            )
     )
     .WithName("GetOrCreateAsync")
     .WithOpenApi();
@@ -54,7 +49,7 @@ app.MapGet(
             return await cache.GetOrCreateAsync(
                 key,
                 async (token) => await Task.Run(() => $"{nameof(cache.GetOrCreateAsync)} - Hello World - {DateTime.Now}"),
-                tags:tags,
+                tags: tags,
                 token: token
             );
         }
@@ -66,19 +61,15 @@ app.MapGet(
 app.MapPost(
         "/SetAsync/{key}",
         async (string key, HybridCache cache, CancellationToken token = default) =>
-        {
-            await cache.SetAsync(key, $"{nameof(cache.SetAsync)} - Hello World - {DateTime.Now}", token: token);
-        }
+        await cache.SetAsync(key, $"{nameof(cache.SetAsync)} - Hello World - {DateTime.Now}", token: token)
     )
     .WithName("CreateAndSet")
     .WithOpenApi();
 
 app.MapDelete(
         "/RemoveByTagAsync",
-        (HybridCache cache, CancellationToken token = default) =>
-        {
-            cache.RemoveByTagAsync($"{nameof(Assembly.FullName)}", token: token);
-        }
+        async (HybridCache cache, CancellationToken token = default) =>
+        await cache.RemoveByTagAsync($"{nameof(Assembly.FullName)}", token: token)
     )
     .WithName("RemoveByTagAsync")
     .WithOpenApi();
@@ -86,10 +77,8 @@ app.MapDelete(
 
 app.MapDelete(
         "/RemoveAsync/{key}",
-        (string key, HybridCache cache, CancellationToken token = default) =>
-        {
-            cache.RemoveAsync(key, token: token);
-        }
+        async (string key, HybridCache cache, CancellationToken token = default) =>
+        await cache.RemoveAsync(key, token: token)
     )
     .WithName("RemoveAsync")
     .WithOpenApi();
