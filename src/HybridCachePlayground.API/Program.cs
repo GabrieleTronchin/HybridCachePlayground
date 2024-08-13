@@ -11,8 +11,8 @@ builder.Services.AddHybridCache(options =>
     options.MaximumKeyLength = 1024;
     options.DefaultEntryOptions = new HybridCacheEntryOptions
     {
-        Expiration = TimeSpan.FromMinutes(5),
-        LocalCacheExpiration = TimeSpan.FromMinutes(5)
+        Expiration = TimeSpan.FromMinutes(2),
+        LocalCacheExpiration = TimeSpan.FromSeconds(30)
     };
 });
 
