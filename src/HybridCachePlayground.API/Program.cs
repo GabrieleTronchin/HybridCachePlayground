@@ -16,7 +16,9 @@ builder.Services.AddHybridCache(options =>
     };
 });
 
-builder.Services.AddStackExchangeRedisCache(options => builder.Configuration.Bind("RedisCache", options));
+builder.Services.AddStackExchangeRedisCache(options =>
+                    builder.Configuration.Bind("DistributedCache", options)
+            );
 
 
 var app = builder.Build();
